@@ -13,6 +13,7 @@ def get_random_data_for_order():
     comment = fake.text()
     return name, lastname, password, address, deliverydate, comment
 
+
     # метод генерирует строку, состоящую только из букв нижнего регистра, в качестве параметра передаём длину строки
 def generate_random_string(length):
     letters = string.ascii_lowercase

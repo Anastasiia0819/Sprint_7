@@ -61,7 +61,7 @@ class TestLoginCourier:
         assert response.json()["message"] == "Учетная запись не найдена"
 
     @allure.step("Некорректно указан пароль")
-    def test_login_incorrect_login_error(self, register_new_courier_dict):
+    def test_login_incorrect_password_error(self, register_new_courier_dict):
         courier_data = register_new_courier_dict
         payload = {"login": courier_data["login"], "password": generate_random_string(10)}
         response = requests.post(f"{Config.URL}api/v1/courier/login", json=payload)

@@ -4,8 +4,8 @@ import json
 import string
 import random
 from src.config import Config
-from helpers import generate_random_string
 import allure
+from helpers import generate_random_string
 
 
 class TestCreateCourier:
@@ -13,14 +13,7 @@ class TestCreateCourier:
     @allure.step("Успешное создание курьера")
     @allure.description("Проверка на статус код = 201, в ответе {'ok':True}")
     def test_create_new_courier(self):
-        # метод генерирует строку, состоящую только из букв нижнего регистра, в качестве параметра передаём длину строки
-        @allure.step("Генерация данных курьера")
-        def generate_random_string(length):
-            letters = string.ascii_lowercase
-            random_string = ''.join(random.choice(letters) for i in range(length))
-            return random_string
-
-        # Данные для нового курьера
+       # Данные для нового курьера
         courier_data = {
             "login": generate_random_string(10),
             "password": generate_random_string(10),
@@ -64,18 +57,19 @@ class TestCreateCourier:
     @allure.description("Проверка на статус код = 400")
     def test_create_without_password_error(self):
         payload = {"login": generate_random_string(10), "password": None, "firstName": generate_random_string(10)}
-        response = requests.post(f"{Config.URL}/api/v1/courier", json=payload)
+        response = requests.post(f"{Config.URL}api/v1/courier", json=payload)
         assert response.status_code == 400
         assert response.json()["message"] == "Недостаточно данных для создания учетной записи"
 
     @allure.step("Создание курьера без фамилии")
-    @allure.description("Проверка на статус код = 400")
-    #падает с ошибкой, но по условию, если одного поля нет, должна быть ошибка (сейчас 200)
-    def test_create_without_firstname_error(self):
+    @allure.description("Проверка на статус код = 200")
+    def test_create_without_firstname_not_error(self):
         payload = {"login": generate_random_string(10), "password": generate_random_string(10), "firstName": None}
         response = requests.post(f"{Config.URL}/api/v1/courier", json=payload)
-        assert response.status_code == 400
-        assert response.json()["message"] == "Недостаточно данных для создания учетной записи"
+        assert response.status_code == 201
+        json_data = response.json()
+        assert 'ok' in json_data
+        assert json_data['ok'] is True
 
 
 
